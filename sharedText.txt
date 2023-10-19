@@ -43,3 +43,76 @@
                     Console.WriteLine(i + " -> " + arrPositive[i] + " dene");
                 }
             }
+/*
+namespace ConsoleApp1
+{
+    internal class Program
+    {
+        static void Main()
+        {
+            Singleton1 arrL1 = new Singleton1(1);
+            arrL1.add();
+            arrL1.add(4);
+            arrL1.show(2);
+           
+        }
+
+    }
+    class Singleton1
+    {
+        internal class node
+        {
+            public node(int x = 1)
+            {
+                this.x = x;
+            }
+            
+            private int x;
+            public node node2;
+
+            public int get()
+            {
+                return this.x;
+            }
+        }
+        public Singleton1(int x)
+        {
+            this.node1 = new node(x);
+            this.length = 1;
+        }
+
+        private int length;
+        private node node1;
+
+        public void iterate(out node p, int index = 0)
+        {
+            p = this.node1;
+
+            for (int i = 0; i < index; i++)
+            {
+                p = p.node2;
+            }
+        }
+        public void add(int x = 0)
+        {
+
+            this.iterate(out node lastNode, length - 1);
+            this.length = this.length + 1;
+
+            lastNode.node2 = new node(x);
+        }
+        public void show(int index = 0)
+        {
+            if (index < 0 || index >= this.length)
+            {
+                Console.WriteLine("error");
+            }
+            else
+            {
+                this.iterate(out node lastNode, index);
+                Console.WriteLine(lastNode.get());
+            }
+        }
+    }
+}
+*/
