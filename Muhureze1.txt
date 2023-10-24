@@ -1,0 +1,63 @@
+namespace Models;
+
+public class Collection
+{
+    class IntList
+    {
+        int[] _array;
+        int _size;
+
+        public void Add(int number)
+        {
+            int[] newArray = new int[this._size + 1];
+
+            for (int i = 0; i < this._size; i++)
+            {
+                newArray[i] = this._array[i];
+            }
+
+            newArray[this._size++] = number;
+            this._array = newArray;
+        }
+        public void Add(params int[] numbers)
+        {
+            int NewSize = this._size + numbers.Length;
+            int[]NewArray = new int[this._size + NewSize];
+
+            for (int i = 0; i < this._size; i++)
+            {
+                NewArray[i] = this._array[i];
+            }
+
+            for (int i = 0; i < numbers.Length; i++) 
+            {
+                NewArray[i + this._size] = numbers[i];
+            }
+
+            this._array = NewArray;
+            this._size = NewSize;
+        }
+        public int Get(int index)
+        {
+            return this._array[index];
+        }
+        public int[] GetAll()
+        {
+            int[] newArray = new int[this._size];
+
+            for (int i = 0; i < this._size; i++) 
+            {
+                newArray[i] = this._array[i];
+            }
+            
+            return newArray;
+        }
+        public void Print()
+        {
+            for(int i = 0; i< this._size; i++)
+            {
+                Console.Write(this._array[i] + ",");
+            }
+        }
+    }
+}

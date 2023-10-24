@@ -1,0 +1,234 @@
+        static void Main()
+        {
+            //
+            Company Company1 = new Company("JafarTech");
+            //
+            Employee Employee1 = new Employee("Jafar", "Mustafazade", 19);
+            Console.WriteLine(Employee1.Username);
+            Company1.AddUser(Employee1);
+            //
+            Company1.RemoveUser(Employee1.Username);
+            Company1.RemoveUser(Employee1.Username);
+            //
+            Company1.AddUser(Employee1);
+            Company1.UpdateUser(Employee1.Username);
+            //
+            Company1.AddUser(Employee1);
+            Employee[] Employees = Company1.GetAllUsers();
+            for (int i = 0; i < Employees.Length; i++)
+            {
+                Console.WriteLine(Employees[i].Username);
+            }
+            //
+            Console.WriteLine(Company1.GetUser(Employee1.Username).Username);
+        }
+/////////////////////////////////////////
+
+    public class Employee
+    {
+        string _name, _surname, _username;
+        byte _age, _flags; // 000
+
+        public string Username
+        {
+            get => _username;
+            set
+            {
+                if (value == "update")
+                {
+                    this._username = this.Name + "_" + this.Surname;
+                }
+            }
+        }
+        public string Name
+        {
+            get { return _name; }
+            set
+            {
+                if (!(String.IsNullOrWhiteSpace(value)))
+                {
+                    value = value.Trim();
+                    this._name = value.ToUpper()[0] + value.Substring(1);
+                    this._flags |= 1; // 001
+                }
+            }
+        }
+        public string Surname
+        {
+            get { return _surname; }
+            set
+            {
+                if (!(String.IsNullOrWhiteSpace(value)))
+                {
+                    value = value.Trim();
+                    this._surname = value.ToUpper()[0] + value.Substring(1);
+                    this._flags |= 2; // 010
+                }
+            }
+        }
+        public byte Age
+        {
+            get => this._age;
+            set
+            {
+                if (value > 0)
+                {
+                    this._age = value;
+                }
+                else
+                {
+                    this._age = 1;
+                }
+            }
+        }
+
+        public Employee(string Name, string Surname, byte Age)
+        {
+            this.Name = Name;
+            this.Surname = Surname;
+            this.Age = Age;
+
+            if (this._flags == 3) // 011
+            {
+                this.Username = "update";
+            }
+        }
+    }
+    public class Company
+    {
+        string _companyName;
+        Employee[] _employees;
+        int _length = 0;
+
+
+        public Company(string CompanyName)
+        {
+            if (!String.IsNullOrWhiteSpace(CompanyName))
+            {
+                this._companyName = CompanyName;
+            }
+        }
+
+        public void AddUser(Employee user)
+        {
+            Employee[] newArray = new Employee[this._length + 1];
+            for (int i = 0; i < this._length; i++)
+            {
+                newArray[i] = this._employees[i];
+            }
+
+            newArray[this._length] = new Employee(user.Name, user.Surname, user.Age);
+            this._length++;
+            this._employees = newArray;
+        }
+        public void RemoveUser(string user)
+        {
+            int RemoveIndex = this.GetUserInt(user);
+
+            if (RemoveIndex >= 0)
+            {
+                int index = 0;
+                Employee[] newArray = new Employee[this._employees.Length - 1];
+
+                for (int i = 0; i < newArray.Length; i++) 
+                {
+                    if (RemoveIndex == i)
+                    {
+                        continue;
+                    }
+                    newArray[index] = this._employees[i];
+                    index++;
+                }
+
+                this._employees = newArray;
+                this._length--;
+            }
+            else
+            {
+                Console.WriteLine("Not founded.");
+            }
+        }
+        public int GetUserInt(string user)
+        {
+            if (this._length > 0)
+            {
+                for (int i = 0; i < this._employees.Length; i++)
+                {
+                    if (this._employees[i].Username == user)
+                    {
+                        return i;
+                    }
+                }
+            }
+            
+            return -1;
+        }
+        public Employee GetUser(string user)
+        {
+            int index = this.GetUserInt(user);
+            if(index >= 0)
+            {
+                return this._employees[index];
+            }
+            else
+            {
+                Console.WriteLine("Not founded.");
+            }
+            return null;
+        }
+        public Employee[] GetAllUsers()
+        {
+            Employee[] ReturnValue = new Employee[this._employees.Length];
+
+            for (int i = 0; i < this._employees.Length; i++)
+            {
+                ReturnValue[i] = new Employee(this._employees[i].Name, this._employees[i].Surname, this._employees[i].Age);
+            }
+
+            return ReturnValue;
+        }
+        public void UpdateUser(string user)
+        {
+            int index = this.GetUserInt(user);
+            bool isInterface = true;
+            if(index >= 0)
+            {
+                do
+                {
+                    Console.WriteLine("1. Update Name");
+                    Console.WriteLine("2. Update Surame");
+                    Console.WriteLine("3. Update Age");
+                    Console.WriteLine("0. None.");
+                    Console.Write("What would you like?(numbers of action): ");
+                    string input = Console.ReadLine();
+
+                    switch (input)
+                    {
+                        case "1":
+                            this._employees[index].Name = Console.ReadLine();
+                            isInterface = false;
+                            break;
+                        case "2":
+                            this._employees[index].Surname = Console.ReadLine();
+                            isInterface = false;
+                            break;
+                        case "3":
+                            input = Console.ReadLine();
+                            this._employees[index].Age = Convert.ToByte(input);
+                            isInterface = false;
+                            break;
+                        case "0":
+                            isInterface = false;
+                            break;
+                        default:
+                            Console.WriteLine("Try again.");
+                            break;
+                    }
+
+                    this._employees[index].Username = "update";
+                } while (isInterface);
+            }
+        }
+    }
+
+/////////////////////////////////////////
