@@ -1,0 +1,255 @@
+internal class Program
+{
+    static void Main(string[] args)
+    {
+        // interface
+        int[] warmap =
+        {
+            0,2,1,2,
+            1,2,1,2,
+            0,1,1,2,
+            0,2,1,2,
+        };
+
+        Random rand = new Random();
+        for (int i = 0; i < warmap.Length; i++)
+        {
+            warmap[i] = rand.Next() % 3;
+            //Console.Write(warmap[i]);
+        }
+
+        string input;
+        Weapon weapon;
+        int temp1, temp2, temp3, index = 0;
+        bool MetalGear = true, mode, isenemy = false;
+
+        Console.WriteLine("Absolute zero you are, zero kills, zero support.");
+        Console.WriteLine("What weapon you even used??");
+
+        Console.Write("How many bullets can take magazine: ");
+        input = Console.ReadLine();
+        temp1 = Convert.ToInt32(input);
+
+        Console.Write("How many bullets left: ");
+        input = Console.ReadLine();
+        temp2 = Convert.ToInt32(input);
+
+        Console.Write("Fire rate: ");
+        input = Console.ReadLine();
+        temp3 = Convert.ToInt32(input);
+
+
+        Console.Write("Fire mode(a-auto/): ");
+        input = Console.ReadLine();
+        if(input.ToLower() == "a") mode = true;
+        else mode = false;
+
+        weapon = new Weapon(temp1, temp2, temp3, mode);
+
+        do
+        {
+            Console.WriteLine("\n0. Get k/d/a potensial.");
+            Console.WriteLine("1. Aim....wait...wait..SHOOT!");
+            Console.WriteLine("2. Fiiireee!");
+            Console.WriteLine("3. Bullet requirment for full ammo.");
+            Console.WriteLine("4. I need to Reload, cover me.");
+            Console.WriteLine("5. Clack, fire mode changed.");
+            Console.WriteLine("6. Why we still here? Just to suffer.");
+            Console.WriteLine("7. Qabaga addim marsh.");
+            Console.WriteLine("8. Sola addim marsh.");
+            Console.Write("Your input into war will be: ");
+            input = Console.ReadLine();
+            switch (input)
+            {
+                case "0":
+                    weapon.GetInfo();
+                    break;
+                case "1":
+                    weapon.Shoot();
+                    Console.WriteLine();
+                    isenemy = false;
+                    break;
+                case "2":
+                    weapon.Fire();
+                    isenemy = false;
+                    break;
+                case "3":
+                    Console.WriteLine(weapon.GetNeedBulletCount() + " bullets.");
+                    break;
+                case "4":
+                    weapon.Reload();
+                    break;
+                case "5":
+                    weapon.ChangeFireMode();
+                    break;
+                case "6":
+                    MetalGear = false;
+                    break;
+                case "7":
+                    index += 4;
+                    break;
+                case "8":
+                    index += 1;
+                    break;
+                default:
+                    Console.WriteLine("I'am not mad.. Just disappointed.\n");
+                    break;
+            }
+
+            if (warmap[index] == 2)
+            {
+                Console.WriteLine("You blowed up. hahahaha.");
+                MetalGear = false;
+            }
+            else if (warmap[index] == 1)
+            {
+                isenemy = true;
+            }
+            else if (isenemy)
+            {
+                Console.WriteLine("Enemy backstabbed you. Knife kill lol.");
+                MetalGear = false;
+            }
+            else if(index >= warmap.Length)
+            {
+                Console.WriteLine("Congrats soilder. You may rest.");
+                MetalGear = false;
+            }
+            else
+            {
+                Console.WriteLine("Let us continue.");
+            }
+
+        } while (MetalGear);
+
+        for (int i = 0; i < warmap.Length; i++)
+        {
+            if (i % 4 == 0)
+            {
+                Console.WriteLine();
+            }
+            Console.Write(warmap[i]);
+        }
+
+        Console.WriteLine();
+    }
+}
+///////////////////////////////////////////
+
+    public class Weapon
+    {
+        int _magazine, _left, _seconds;
+        bool _isAuto;
+
+        public Weapon(int Magazine, int AmmoLeft, int FireRate, bool FireMode)
+        {
+            this.Magazine = Magazine;
+            this.AmmoLeft = AmmoLeft;
+            this.FireMode = FireMode;
+            this.AmmoFireRate = FireRate;
+        }
+
+        public int Magazine 
+        { 
+            get => this._magazine;
+            set
+            {
+                this._magazine = value;
+                if (this._magazine < 0)
+                {
+                    this._magazine = 30;
+                }
+            }
+        }
+        public int AmmoLeft 
+        { 
+            get => this._left;
+            set
+            {
+                if (value > 0 && value <= this.Magazine)
+                {
+                    this._left = value;
+                }
+                else
+                {
+                    this._left = this.Magazine;
+                }
+            }
+        }
+        public int AmmoFireRate 
+        { 
+            get => this._seconds;
+            set
+            {
+                if (value > 0)
+                {
+                    this._seconds = value;
+                }
+                else
+                {
+                    this._seconds = 0;
+                }
+            }
+        }
+        public bool FireMode
+        {
+            get => this._isAuto;
+            set => this._isAuto = value;
+        }
+
+        public bool Shoot()
+        {
+            if (this._left > 0)
+            {
+                this._left--;
+                Console.Write("Bang!");
+                return true;
+            }
+            Console.WriteLine("Pix.");
+            return false;
+        }
+        public void Fire()
+        {
+            double count = 0;
+            for (int i = 0; i < this._magazine; i++)
+            {
+                if (this.Shoot())
+                {
+                    count++;
+                }
+                else
+                {
+                    break;
+                }
+                if (!this._isAuto) break;
+            }
+            if (count > 0)
+            {
+                count = (count / this._magazine) * this._seconds;
+            }
+            Console.WriteLine("\n" + count + " seconds gun fired and none hit the target. AHahahah XD");
+        }
+        public int GetNeedBulletCount()
+        {
+            return this._magazine - this._left;
+        }
+        public void Reload()
+        {
+            this._left = this._magazine;
+            Console.WriteLine("Reloaded.");
+        }
+        public void ChangeFireMode()
+        {
+            this._isAuto = !this._isAuto;
+            Console.WriteLine("Fire mode changed.");
+        }
+        public void GetInfo()
+        {
+            Console.WriteLine("\nMagazine: " + this.Magazine + " mk2 bullets.");
+            Console.WriteLine("Fire rate: " + this.Magazine + "/" + this.AmmoFireRate + " bullets per second.");
+            Console.Write("Fire mode: ");
+            if (this.FireMode) Console.WriteLine("auto");
+            else Console.WriteLine("single");
+            Console.WriteLine("Ammo left in magazine: " + this.AmmoLeft + " bullets.");
+        }
+    }
