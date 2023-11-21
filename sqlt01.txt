@@ -1,0 +1,83 @@
+--CREATE DATABASE Test1
+
+USE Test1
+DROP FUNCTION Proper_PN
+GO
+
+
+CREATE FUNCTION dbo.Proper_PN(@Input VARCHAR(20))
+RETURNS VARCHAR(19)
+AS
+BEGIN
+	DECLARE @Result VARCHAR(19);
+	IF (LEN(@Input) = 13)
+	BEGIN
+		SET @Input = SUBSTRING(@Input,5,9);
+	END
+	IF (LEN(@Input) > 10 OR LEN(@Input) < 9)
+	BEGIN
+		RETURN 'INVALID';
+	END
+	SET @Result = FORMAT(CAST(@Input as numeric),'+994 (##) ###-##-##');
+	RETURN @Result;
+END
+GO
+
+SELECT dbo.Proper_PN('+994779923445') AS Task1
+
+
+
+DROP TABLE Town
+DROP TABLE District
+DROP TABLE City
+DROP TABLE Country
+
+CREATE TABLE Country(
+	ID INT IDENTITY PRIMARY KEY,
+	[Name] VARCHAR(31),
+	Code VARCHAR(31)
+)
+CREATE TABLE City(
+	ID INT IDENTITY PRIMARY KEY,
+	[Name] VARCHAR(31),
+	Code VARCHAR(31),
+	Country_ID INT FOREIGN KEY REFERENCES Country(ID)
+)
+CREATE TABLE District(
+	ID INT IDENTITY PRIMARY KEY,
+	[Name] VARCHAR(31),
+	Code VARCHAR(31),
+	Country_ID INT FOREIGN KEY REFERENCES Country(ID),
+	City_ID INT FOREIGN KEY REFERENCES City(ID)
+)
+CREATE TABLE Town(
+	ID INT IDENTITY PRIMARY KEY,
+	[Name] VARCHAR(31),
+	Code VARCHAR(31),
+	Country_ID INT FOREIGN KEY REFERENCES Country(ID),
+	City_ID INT FOREIGN KEY REFERENCES City(ID),
+	District_ID INT FOREIGN KEY REFERENCES District(ID),
+	Created_At DATE DEFAULT CURRENT_TIMESTAMP
+)
+
+INSERT INTO Country VALUES
+('JafarCountry','160A')
+
+INSERT INTO City VALUES
+('JafarCity','160A',1),('JafarCity2','161A',1)
+
+INSERT INTO District VALUES
+('JafarDistrict','160A',1,1),('JafarDistrict2','161A',1,2),
+('JafarDistrict3','161A',1,2)
+
+INSERT INTO Town VALUES
+('JafarTown','160A',1,1,1,DEFAULT),('JafarTown2','161A',1,1,1,DEFAULT),
+('JafarTown3','161A',1,1,1,DEFAULT),('JafarTown4','161A',1,1,1,DEFAULT)
+
+
+--INSERT INTO District VALUES
+--('JafarDistrict','160A',1,2)
+
+SELECT d.ID, d.[Name] as District FROM District as d
+JOIN Town as t ON t.District_ID = d.ID 
+AND DATEDIFF(day,t.Created_At,CURRENT_TIMESTAMP) < 10
