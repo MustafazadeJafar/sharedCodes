@@ -1,0 +1,261 @@
+
+--CREATE DATABASE Alinono
+USE Alinono
+
+
+DROP TABLE Comments
+DROP TABLE Books_Language
+DROP TABLE [Language]
+DROP TABLE Books_Genres
+DROP TABLE Genres
+DROP TABLE Authors_Books
+DROP TABLE Books
+DROP TABLE [Bindings]
+DROP TABLE Authors
+DROP TABLE Publishing_House
+DROP TABLE Categories
+
+
+CREATE TABLE Categories(
+	ID INT IDENTITY PRIMARY KEY,
+	Title VARCHAR(31) NOT NULL,
+	Parent_ID INT FOREIGN KEY REFERENCES Categories(ID),
+	Is_Deleted BIT DEFAULT 1
+)
+
+CREATE TABLE Publishing_House(
+	ID INT IDENTITY PRIMARY KEY,
+	Title VARCHAR(31) NOT NULL,
+	Is_Deleted BIT DEFAULT 1
+)
+
+CREATE TABLE Authors(
+	ID INT IDENTITY PRIMARY KEY,
+	[Name] NVARCHAR(31),
+	Surname NVARCHAR(31),
+	Is_Deleted BIT DEFAULT 1
+)
+
+CREATE TABLE [Bindings](
+	ID INT IDENTITY PRIMARY KEY,
+	Title NVARCHAR(31) NOT NULL,
+	Is_Deleted BIT DEFAULT 1
+)
+
+CREATE TABLE Books(
+	ID INT IDENTITY PRIMARY KEY,
+	Title NVARCHAR(31) NOT NULL,
+	[Description] NVARCHAR(131),
+	Actual_Price MONEY,
+	Discount_Price MONEY DEFAULT NULL,
+	Pages INT,
+	Stock_Count INT,
+	Article_Code INT,
+	Publishing_House_ID INT FOREIGN KEY REFERENCES Publishing_House(ID),
+	Binding_ID INT FOREIGN KEY REFERENCES [Bindings](ID),
+	Is_Deleted BIT DEFAULT 1
+)
+
+CREATE TABLE Authors_Books(
+	ID INT IDENTITY PRIMARY KEY,
+	Book_ID INT FOREIGN KEY REFERENCES Books(ID),
+	Author_ID INT FOREIGN KEY REFERENCES Authors(ID),
+	Is_Deleted BIT DEFAULT 1
+)
+
+CREATE TABLE Genres(
+	ID INT IDENTITY PRIMARY KEY,
+	Title NVARCHAR(31) NOT NULL,
+	Is_Deleted BIT DEFAULT 1
+)
+
+CREATE TABLE Books_Genres(
+	ID INT IDENTITY PRIMARY KEY,
+	Books_ID INT FOREIGN KEY REFERENCES Books(ID),
+	Genre_ID INT FOREIGN KEY REFERENCES Genres(ID),
+	Is_Deleted BIT DEFAULT 1
+)
+
+
+CREATE TABLE [Language](
+	ID INT IDENTITY PRIMARY KEY,
+	Title NVARCHAR(31) NOT NULL,
+	Is_Deleted BIT DEFAULT 1
+)
+
+CREATE TABLE Books_Language(
+	ID INT IDENTITY PRIMARY KEY,
+	Book_ID INT FOREIGN KEY REFERENCES Books(ID),
+	Language_ID INT FOREIGN KEY REFERENCES [Language](ID),
+	Is_Deleted BIT DEFAULT 1
+)
+
+
+CREATE TABLE Comments(
+	ID INT IDENTITY PRIMARY KEY,
+	Book_ID INT FOREIGN KEY REFERENCES Books(ID),
+	[Description] NVARCHAR(131),
+	Rating TINYINT CHECK(Rating BETWEEN 0 AND 5),
+	[Name] VARCHAR(31),
+	Email VARCHAR(31),
+	ImageURL NVARCHAR(MAX),
+	Is_Deleted BIT DEFAULT 1
+)
+
+
+
+DROP PROCEDURE Insert_Into_Categories
+GO
+
+CREATE PROCEDURE Insert_Into_Categories
+(@Title varchar(31),@Parent_ID INT = NULL)
+AS
+BEGIN
+INSERT INTO Categories VALUES (@Title, @Parent_ID, DEFAULT)
+END
+
+
+DROP PROCEDURE Insert_Into_Authors
+GO
+
+CREATE PROCEDURE Insert_Into_Authors
+(
+    @Name NVARCHAR(31),
+    @Surname NVARCHAR(31)
+)
+AS
+BEGIN
+    INSERT INTO Authors
+    VALUES (@Name, @Surname, 1) 
+END
+
+
+DROP PROCEDURE Insert_Into_Bindings
+GO
+
+CREATE PROCEDURE Insert_Into_Bindings
+(
+    @Title NVARCHAR(31)
+)
+AS
+BEGIN
+    INSERT INTO [Bindings]
+    VALUES (@Title, 1)
+END
+
+
+DROP PROCEDURE Insert_Into_Books
+GO
+
+CREATE PROCEDURE Insert_Into_Books
+(
+    @Title NVARCHAR(31),
+    @Description NVARCHAR(131),
+    @Actual_Price MONEY,
+    @Discount_Price MONEY = NULL,
+    @Pages INT,
+    @Stock_Count INT,
+    @Article_Code INT,
+    @Publishing_House_ID INT,
+    @Binding_ID INT
+)
+AS
+BEGIN
+    INSERT INTO Books 
+    VALUES (@Title, @Description, @Actual_Price, @Discount_Price, @Pages, @Stock_Count, @Article_Code, @Publishing_House_ID, @Binding_ID, 1)
+END
+
+
+DROP PROCEDURE Insert_Into_Authors_Books
+GO
+
+CREATE PROCEDURE Insert_Into_Authors_Books
+(
+    @Book_ID INT,
+    @Author_ID INT
+)
+AS
+BEGIN
+    INSERT INTO Authors_Books
+    VALUES (@Book_ID, @Author_ID, 1)
+END
+
+
+DROP PROCEDURE Insert_Into_Genres
+GO
+
+CREATE PROCEDURE Insert_Into_Genres
+(
+    @Title NVARCHAR(31)
+)
+AS
+BEGIN
+    INSERT INTO Genres 
+    VALUES (@Title, 1) 
+END
+
+
+DROP PROCEDURE Insert_Into_Books_Genres
+GO
+
+CREATE PROCEDURE Insert_Into_Books_Genres
+(
+    @Books_ID INT,
+    @Genre_ID INT
+)
+AS
+BEGIN
+    INSERT INTO Books_Genres
+    VALUES (@Books_ID, @Genre_ID, 1)
+END
+
+
+DROP PROCEDURE Insert_Into_Language
+GO
+
+CREATE PROCEDURE Insert_Into_Language
+(
+    @Title NVARCHAR(31)
+)
+AS
+BEGIN
+    INSERT INTO [Language]
+    VALUES (@Title, 1)
+END
+
+
+DROP PROCEDURE Insert_Into_Books_Language
+GO
+
+CREATE PROCEDURE Insert_Into_Books_Language
+(
+    @Book_ID INT,
+    @Language_ID INT
+)
+AS
+BEGIN
+    INSERT INTO Books_Language
+    VALUES (@Book_ID, @Language_ID, 1)
+END
+
+
+DROP PROCEDURE Insert_Into_Comments
+GO
+
+CREATE PROCEDURE Insert_Into_Comments
+(
+    @Book_ID INT,
+    @Description NVARCHAR(131),
+    @Rating TINYINT,
+    @Name VARCHAR(31),
+    @Email VARCHAR(31),
+    @ImageURL NVARCHAR(MAX)
+)
+AS
+BEGIN
+    INSERT INTO Comments
+    VALUES (@Book_ID, @Description, @Rating, @Name, @Email, @ImageURL, 1) 
+END
+GO
+
+
