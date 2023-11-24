@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Kuru Kuru ^-^</title>
+<style>
+.preload {
+    position: absolute;
+    left: 0;
+    top: 0;
+    visibility: hidden
+}
+
+button {
+    background-color: #574f84;
+    border: none;
+    border-radius: 16px;
+    color: #fff;
+    padding: 16px 32px;
+    text-decoration: none;
+    font-weight: 700;
+    margin-top: 16px
+}
+
+button:hover {
+    background-color: #2d2463
+}
+
+body {
+    background-color: #9d88d3;
+    color: #fff;
+}
+
+.cloned {
+    position: absolute;
+    z-index: -1;
+}
+</style>
+</head>
+<body>
+    <img src="hertaa1.gif" id="h1" class="preload">
+    <audio src="kuru1.mp3" id="k1" class="preload" type="audio/mp3"></audio>
+    <audio src="kuru2.mp3" id="k2" class="preload" type="audio/mp3"></audio>
+    <audio src="kuruto.mp3" id="k0" class="preload" type="audio/mp3"></audio>
+
+    <div id="container">
+        <button onclick="summon()">Summon Kuru</button>
+        <h2>Have been summoned <a id="counter">0</a> times</h2>
+        <pre id="gifput"></pre>
+    </div>
+
+<script>
+const audiobj0 = document.getElementById("k0");
+const audiobj1 = document.getElementById("k1");
+const audiobj2 = document.getElementById("k2");
+
+const imgobj1 = document.getElementById("h1");
+
+const puthere = document.getElementById("gifput");
+const counter = document.getElementById("counter");
+
+var fsummon = true;
+
+function getrng() {
+    return (parseInt(Math.random() * 2)) - 1;
+};
+
+function summon(){
+    let audioobj;
+    counter.innerHTML = parseInt(counter.textContent) + 1;
+
+    if(fsummon){
+        audioobj = audiobj0.cloneNode();
+        fsummon = false;
+    }else{
+        if(getrng()){
+            audioobj = audiobj1.cloneNode();
+        }else{
+            audioobj = audiobj2.cloneNode();
+        }
+    }
+    audioobj.play();
+    
+    audioobj.addEventListener("ended", function () {
+        this.remove();
+    });
+
+
+    var simg = imgobj1.cloneNode();
+    simg.setAttribute("class", "cloned");
+
+    simg.style.right = "-510px";
+    puthere.appendChild(simg);
+    
+    var pos = -510;
+    var limit = window.innerWidth + 510;
+    
+    var id = null;
+    clearInterval(id);
+    id = setInterval(frame, 30);
+
+    function frame() {
+        if (pos >= limit) {
+            clearInterval(id);
+            simg.remove();
+        } else {
+            pos += 40;
+            simg.style.right = pos + 'px';
+        }
+    }  
+};
+</script>
+</body>
+</html>
