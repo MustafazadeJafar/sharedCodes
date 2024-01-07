@@ -1,0 +1,138 @@
+using System.Net;
+
+namespace HttpSenders;
+
+public class HttpSender
+{
+    HttpClient _client;
+
+    public HttpSender(bool isCookie = false)
+    {
+        if (isCookie)
+        {
+            this._client = new HttpClient(new HttpClientHandler
+            {
+                CookieContainer = new CookieContainer(),
+                UseCookies = true,
+                UseDefaultCredentials = false
+            });
+        }
+        else
+        {
+            this._client = new HttpClient();
+        }
+    }
+
+    public async Task<HttpResponseMessage> GetMethod(string url)
+    {
+        return await this._client.GetAsync(url);
+    }
+
+    public async Task<HttpResponseMessage> PostMethod(string url, List<KeyValuePair<string, string>> payload)
+    {
+        return await this._client.PostAsync(url, new FormUrlEncodedContent(payload));
+    }
+
+    public async Task<HttpResponseMessage> PostMethod(string url, string payload)
+    {
+        return await this.PostMethod(url, HttpSender.CreatePayload(payload));
+    }
+
+
+
+    public static async Task<string> ParseResponse(HttpResponseMessage response)
+    {
+        return await response.Content.ReadAsStringAsync();
+    }
+}
+
+
+
+// // //
+
+namespace HttpSenders;
+
+public class CustomPayload
+{
+    public class CustomKeyVal
+    {
+        public string Key { get; set; }
+        public string Value { get; set; }
+
+        public CustomKeyVal(string key, string value)
+        {
+            this.Key = key; this.Value = value;
+        }
+    }
+    List<CustomKeyVal> _customKeys = new();
+
+    public CustomPayload(string parsed)
+    {
+        foreach (string item in parsed.Split('&'))
+        {
+            int index = item.IndexOf('=');
+            string key = item[..index++];
+            string value = item.Length > index ? item[index..] : "";
+
+            this.AddKey(key, value);
+        }
+    }
+
+    public bool AddKey(string key, string value = "")
+    {
+        if (this._customKeys.Any(k => k.Key == key)) return false;
+        this._customKeys.Add(new CustomKeyVal(key, value));
+        return true;
+    }
+
+    public int Count { get => this._customKeys.Count; }
+
+    public string this[string key]
+    {
+        get
+        {
+            var instance = this._customKeys.Find(kv => kv.Key == key);
+            if (instance != null) return instance.Value;
+            else return null;
+        }
+        set
+        {
+            var instance = this._customKeys.Find(kv => kv.Key == key);
+            if (instance != null) instance.Value = value;
+        }
+    }
+    public CustomKeyVal this[int i]
+    {
+        get
+        {
+            var instance = this._customKeys.Count > i ? this._customKeys[i] : null;
+            return instance;
+        }
+    }
+
+    public static List<KeyValuePair<string, string>> CreatePayload(string parsed)
+    {
+        List<KeyValuePair<string, string>> payload = new();
+        foreach (string item in parsed.Split('&'))
+        {
+            int index = item.IndexOf('=');
+            string key = item[..index++];
+            string value = item.Length > index ? item[index..] : "";
+
+            payload.Add(new KeyValuePair<string, string>(key, value));
+        }
+
+        return payload;
+    }
+
+    public static List<KeyValuePair<string, string>> CreatePayload(CustomPayload custom)
+    {
+        List<KeyValuePair<string, string>> payload = new();
+        for (int i = 0; i < custom.Count; i++)
+        {
+            payload.Add(new KeyValuePair<string, string>(custom[i].Key, custom[i].Value));
+        }
+
+        return payload;
+    }
+}

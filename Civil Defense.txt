@@ -1,0 +1,50 @@
+Civil Defense
+zoman, v-qaz _ sinir
+mulayim _ 3-4
+surusme _ qeyrimueyyen
+dalga zeiflemesi _ 2.5-3
+bi-zet _ psix
+signacaq _ 75 min
+Zarin _ sinir
+DP-5V _ 0.05-200 mR/saat
+Yaara emele getiren _ 1 sari helqe
+Guclu kulek dehsetli _ 98-116
+obyektlerin is dayaniqligi _ orta berpa olmasi
+zerba dalgasi _ izafi tezyiq
+ortulu yarganin merhelesi _ 2
+beton 2x zeifledir rad _ 10 sm betonla
+tibb menteqesi _ her 100 - 1m^2
+istirahet _ 10-15 deq
+Dozimetr _ DP_22V
+ventilyasiya _ 2m^2
+ust ortuk - en yuxari mertebe _ 0.75m
+fovqalada hallarda esas _ ferdi muhafize
+hevale olunur _ hakimiyyet orqanlarina
+hecmli partlayis _ 20-30 kqq/m^2
+tabeli respirator _ R-2U
+olmayan adamlar _ 0.6-1.0 (60-100 kPa)
+siqnallar _ +=kimya heyecani
+xeyli guclu _ 5-6
+iki mertebeli taxtlar _ 2.2-2.4
+PTM-1 _ iki hisse
+ferdi qorunma _ deri ve tibbi
+kimyevi zeherlenme zonasi _ 2 zona
+en genis otaqlar _ 50-75 neferlik
+muhafize aiddir _ daldalanacaq
+ektanlayici divarin girisden mesafe _ B=A/2 +0.6
+1.5 yas _ KZD-6
+guzlu buzlasma _ metereoloji
+surusme _ geoloji
+O olculu _ 63.0
+2 olculu _ 65.5
+gozun isiq sualanmasi _ goz qapag ve agi yanir
+obyektlerin is dayaniqligi artirilmasi _ texnoloji vaxtinda
+L-1 OZK _ deri sethi muhafize
+DP-24 _ Zd-5
+ilkin sertler _ istiqameti
+
+
+DP-5A _ 1)5-200, 2)500-5000, 3)50-500, 4)5-50, 5)0.5-5, 6)0.05-0.5
+
+
+metereloji _ firtina, tufan, dolu, quraqliq, gclu isti
